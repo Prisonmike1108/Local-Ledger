@@ -1,0 +1,404 @@
+{
+  "_readme": "Color themes for the Personal Finance Ledger. Edit a color or add a theme and reload the dashboard: no code changes needed. Every color is #rrggbb. Per theme: name; primary (main accent and chart color); dark (banner and deep shade); light (panel and card tint); canvas (page background); border; accent (second highlight); types (the Scheduled, Budget and Extra colors used by charts and the money-goes bar); kpi (the four stat-card colors: Income, Expenses, Left this period, Left after budgets); spectrum (six colors the charts and animated background run through); glow (optional, 0 to 1, how strong the animated background is); kpi_tuning (optional, blend/deepen/mute from 0 to 1, to make this theme's card colors calmer or livelier than the global setting). If this file has a mistake, the dashboard names the problem in the Appearance panel and keeps working.",
+  "default_theme": "soft",
+  "kpi_tuning": {
+    "blend": 0.18,
+    "deepen": 0.08,
+    "mute": 0.3
+  },
+  "themes": {
+    "soft": {
+      "name": "Soft",
+      "primary": "#6670b8",
+      "dark": "#3f4468",
+      "light": "#eceef8",
+      "canvas": "#f7f6fb",
+      "border": "#e0e1f0",
+      "accent": "#e8a0b8",
+      "types": {
+        "Scheduled": "#6670b8",
+        "Budget": "#a9b4e8",
+        "Extra": "#e8a0b8"
+      },
+      "kpi": [
+        "#2f9e82",
+        "#e0687f",
+        "#5b8def",
+        "#9b7fe0"
+      ],
+      "spectrum": [
+        "#f4a6c0",
+        "#f7c59f",
+        "#f6e3a1",
+        "#a8dcc0",
+        "#9fd3ea",
+        "#b5a8ee"
+      ],
+      "glow": 0.2
+    },
+    "forest": {
+      "name": "Forest",
+      "primary": "#1f4d3a",
+      "dark": "#123226",
+      "light": "#e4eee8",
+      "canvas": "#f5f8f5",
+      "border": "#d3e0d7",
+      "accent": "#b08d57",
+      "types": {
+        "Scheduled": "#1f4d3a",
+        "Budget": "#7fae93",
+        "Extra": "#b08d57"
+      },
+      "kpi": [
+        "#22a06b",
+        "#e5604d",
+        "#3b82f6",
+        "#a855f7"
+      ],
+      "spectrum": [
+        "#d9b36a",
+        "#a8c97f",
+        "#5fae7e",
+        "#2f8a68",
+        "#7fb8a4",
+        "#c9a65f"
+      ]
+    },
+    "navy": {
+      "name": "Navy",
+      "primary": "#1e3a5f",
+      "dark": "#0e2440",
+      "light": "#e3eaf4",
+      "canvas": "#f5f7fb",
+      "border": "#d0dbe9",
+      "accent": "#c9a227",
+      "types": {
+        "Scheduled": "#1e3a5f",
+        "Budget": "#86a8d3",
+        "Extra": "#c9a227"
+      },
+      "kpi": [
+        "#22a06b",
+        "#e5604d",
+        "#3b82f6",
+        "#a855f7"
+      ],
+      "spectrum": [
+        "#c9a227",
+        "#e8c46a",
+        "#9bbbe0",
+        "#5b8bc9",
+        "#3b6bb0",
+        "#86a8d3"
+      ]
+    },
+    "burgundy": {
+      "name": "Burgundy",
+      "primary": "#7b2d3b",
+      "dark": "#46141f",
+      "light": "#f4e4e7",
+      "canvas": "#fbf6f6",
+      "border": "#e8d2d6",
+      "accent": "#b8864b",
+      "types": {
+        "Scheduled": "#7b2d3b",
+        "Budget": "#d7a1ab",
+        "Extra": "#b8864b"
+      },
+      "kpi": [
+        "#22a06b",
+        "#e5604d",
+        "#3b82f6",
+        "#a855f7"
+      ],
+      "spectrum": [
+        "#e0788c",
+        "#c9506a",
+        "#d9954f",
+        "#e6b072",
+        "#d7a1ab",
+        "#a8435b"
+      ]
+    },
+    "slate": {
+      "name": "Slate",
+      "primary": "#3b4a5c",
+      "dark": "#1f2a37",
+      "light": "#e6ebf1",
+      "canvas": "#f5f7f9",
+      "border": "#d3dae2",
+      "accent": "#7c8da3",
+      "types": {
+        "Scheduled": "#3b4a5c",
+        "Budget": "#9fb0c4",
+        "Extra": "#b7791f"
+      },
+      "kpi": [
+        "#22a06b",
+        "#e5604d",
+        "#3b82f6",
+        "#a855f7"
+      ],
+      "spectrum": [
+        "#8aa0b8",
+        "#6fa8b8",
+        "#9fb0c4",
+        "#d9a441",
+        "#b7791f",
+        "#7c8da3"
+      ]
+    },
+    "teal": {
+      "name": "Teal",
+      "primary": "#0f766e",
+      "dark": "#0a3f3b",
+      "light": "#dcefed",
+      "canvas": "#f2f9f8",
+      "border": "#c5e0dd",
+      "accent": "#d08c3b",
+      "types": {
+        "Scheduled": "#0f766e",
+        "Budget": "#6cc0b8",
+        "Extra": "#d08c3b"
+      },
+      "kpi": [
+        "#22a06b",
+        "#e5604d",
+        "#3b82f6",
+        "#a855f7"
+      ],
+      "spectrum": [
+        "#5eead4",
+        "#2dd4bf",
+        "#14a89f",
+        "#38bdf8",
+        "#e0a24f",
+        "#f4c26b"
+      ]
+    },
+    "terracotta": {
+      "name": "Terracotta",
+      "primary": "#9a4f2e",
+      "dark": "#55291a",
+      "light": "#f3e6db",
+      "canvas": "#fbf7f2",
+      "border": "#e6d5c4",
+      "accent": "#6b7f5a",
+      "types": {
+        "Scheduled": "#9a4f2e",
+        "Budget": "#dba883",
+        "Extra": "#6b7f5a"
+      },
+      "kpi": [
+        "#22a06b",
+        "#e5604d",
+        "#3b82f6",
+        "#a855f7"
+      ],
+      "spectrum": [
+        "#e07a5f",
+        "#f2a65a",
+        "#e9c46a",
+        "#a8bd84",
+        "#7f9468",
+        "#c9754d"
+      ]
+    },
+    "plum": {
+      "name": "Plum",
+      "primary": "#5b3a73",
+      "dark": "#33204a",
+      "light": "#ece3f2",
+      "canvas": "#f9f6fb",
+      "border": "#dccbe6",
+      "accent": "#b08d57",
+      "types": {
+        "Scheduled": "#5b3a73",
+        "Budget": "#b9a0cf",
+        "Extra": "#b08d57"
+      },
+      "kpi": [
+        "#22a06b",
+        "#e5604d",
+        "#3b82f6",
+        "#a855f7"
+      ],
+      "spectrum": [
+        "#d17bb5",
+        "#b06bd0",
+        "#8a5bd0",
+        "#e8a0b8",
+        "#d9b36a",
+        "#8f6bb8"
+      ]
+    },
+    "charcoal": {
+      "name": "Charcoal",
+      "primary": "#2b2f36",
+      "dark": "#14161a",
+      "light": "#e9eaec",
+      "canvas": "#f6f6f7",
+      "border": "#d9dbde",
+      "accent": "#b9814a",
+      "types": {
+        "Scheduled": "#2b2f36",
+        "Budget": "#9aa0a8",
+        "Extra": "#b9814a"
+      },
+      "kpi": [
+        "#22a06b",
+        "#e5604d",
+        "#3b82f6",
+        "#a855f7"
+      ],
+      "spectrum": [
+        "#e5a35c",
+        "#d98a4a",
+        "#b0b6bf",
+        "#6fa3c8",
+        "#8fb8a0",
+        "#c9b27c"
+      ]
+    },
+    "sunset": {
+      "name": "Sunset",
+      "primary": "#c2410c",
+      "dark": "#4a1d0a",
+      "light": "#fdeadb",
+      "canvas": "#fff8f3",
+      "border": "#f3d3bd",
+      "accent": "#be185d",
+      "types": {
+        "Scheduled": "#c2410c",
+        "Budget": "#f4a77a",
+        "Extra": "#be185d"
+      },
+      "kpi": [
+        "#16a34a",
+        "#dc2626",
+        "#f59e0b",
+        "#be185d"
+      ],
+      "spectrum": [
+        "#ff4d6d",
+        "#ff7a45",
+        "#ffb347",
+        "#ffd166",
+        "#f06292",
+        "#c2185b"
+      ]
+    },
+    "ocean": {
+      "name": "Ocean",
+      "primary": "#0369a1",
+      "dark": "#082f49",
+      "light": "#dff0fa",
+      "canvas": "#f3f9fd",
+      "border": "#c7e0ef",
+      "accent": "#0d9488",
+      "types": {
+        "Scheduled": "#0369a1",
+        "Budget": "#7cc4e8",
+        "Extra": "#0d9488"
+      },
+      "kpi": [
+        "#0d9488",
+        "#f43f5e",
+        "#0ea5e9",
+        "#6366f1"
+      ],
+      "spectrum": [
+        "#2dd4bf",
+        "#22d3ee",
+        "#38bdf8",
+        "#3b82f6",
+        "#6366f1",
+        "#34d399"
+      ]
+    },
+    "aurora": {
+      "name": "Aurora",
+      "primary": "#6d28d9",
+      "dark": "#2e1065",
+      "light": "#ede4fb",
+      "canvas": "#f8f5fe",
+      "border": "#ddd0f5",
+      "accent": "#10b981",
+      "types": {
+        "Scheduled": "#6d28d9",
+        "Budget": "#b9a1ec",
+        "Extra": "#10b981"
+      },
+      "kpi": [
+        "#10b981",
+        "#f43f5e",
+        "#6d28d9",
+        "#06b6d4"
+      ],
+      "spectrum": [
+        "#34d399",
+        "#2dd4bf",
+        "#38bdf8",
+        "#8b5cf6",
+        "#d946ef",
+        "#f472b6"
+      ]
+    },
+    "midnight": {
+      "name": "Midnight",
+      "primary": "#4338ca",
+      "dark": "#1e1b4b",
+      "light": "#e5e7fb",
+      "canvas": "#f6f6fd",
+      "border": "#d4d6f3",
+      "accent": "#06b6d4",
+      "types": {
+        "Scheduled": "#4338ca",
+        "Budget": "#a5b4fc",
+        "Extra": "#06b6d4"
+      },
+      "kpi": [
+        "#10b981",
+        "#f43f5e",
+        "#4338ca",
+        "#06b6d4"
+      ],
+      "spectrum": [
+        "#22d3ee",
+        "#60a5fa",
+        "#818cf8",
+        "#a78bfa",
+        "#e879f9",
+        "#34d399"
+      ]
+    },
+    "citrus": {
+      "name": "Citrus",
+      "primary": "#4d7c0f",
+      "dark": "#1a2e05",
+      "light": "#eef5d9",
+      "canvas": "#fafcf1",
+      "border": "#dbe6b8",
+      "accent": "#ea580c",
+      "types": {
+        "Scheduled": "#4d7c0f",
+        "Budget": "#b5d86a",
+        "Extra": "#ea580c"
+      },
+      "kpi": [
+        "#4d7c0f",
+        "#ea580c",
+        "#0ea5e9",
+        "#a855f7"
+      ],
+      "spectrum": [
+        "#a3e635",
+        "#facc15",
+        "#fb923c",
+        "#f43f5e",
+        "#22d3ee",
+        "#84cc16"
+      ]
+    }
+  }
+}

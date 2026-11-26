@@ -1,0 +1,48 @@
+name: Build the Windows download
+
+# Push a tag like v1.0.0 and this builds the zip and attaches it to a Release.
+# You can also run it by hand (Actions tab > "Build the Windows download" > Run workflow) to get the zip without a Release.
+on:
+  push:
+    tags: ["v*"]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+
+      - name: Build the zip
+        shell: bash
+        run: |
+          VERSION="${GITHUB_REF_NAME}"
+          if [ "${GITHUB_REF_TYPE}" != "tag" ]; then VERSION="dev-${GITHUB_RUN_NUMBER}"; fi
+          python tools/build_release.py --version "$VERSION"
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: local-ledger-windows
+          path: dist/*.zip
+
+      - name: Attach it to the Release
+        if: github.ref_type == 'tag'
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          # a release made by hand for this tag just gets the zip added
+          if gh release view "${GITHUB_REF_NAME}" >/dev/null 2>&1; then
+            gh release upload "${GITHUB_REF_NAME}" dist/*.zip --clobber
+            exit 0
+          fi
+          gh release create "${GITHUB_REF_NAME}" dist/*.zip \
+            --title "Personal Finance Ledger ${GITHUB_REF_NAME}" \
+            --notes "Windows only. No code or Python needed. 1) Download the file ending in -windows.zip below. 2) Unzip it somewhere permanent and double-click Start Personal Finance Ledger (if Windows says protected your PC, choose More info, then Run anyway). 3) Pick how you budget, then follow START HERE.txt inside the zip to import your bank's export."

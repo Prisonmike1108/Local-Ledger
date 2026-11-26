@@ -1,0 +1,136 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Personal Finance Ledger</title>
+<link rel="stylesheet" href="style.css">
+<style id="animcss"></style>
+<script>try { const f = localStorage.getItem("ft_font"); if (f) document.documentElement.style.fontSize = f + "px"; } catch (e) {}</script>
+</head>
+<body>
+<div class="wrap">
+  <header class="banner">
+    <div><h1>Personal Finance Ledger</h1><small id="sub">HTML edition</small></div>
+    <div class="bar-right">
+      <button class="b" id="undo" title="Put back the last file changed">Undo</button>
+      <select id="period" aria-label="Pay period"></select>
+    </div>
+  </header>
+  <div class="note hide" id="importbar"></div>
+  <nav class="tabs" id="tabs">
+    <button data-t="ov" class="on">Overview</button><button data-t="fc">Cash Forecast</button>
+    <button data-t="tx">Transactions</button><button data-t="an">Analysis</button><button data-t="pl">Plan</button><button data-t="em">Email</button>
+  </nav>
+
+  <section id="ov">
+    <div class="kpis" id="kpis"></div>
+    <div class="ovgrid">
+      <div class="ovmain">
+    <div class="row sec"><span class="lab">Bills this paycheck</span><span id="tally" class="mu"></span></div>
+    <div class="chips" id="chips"></div>
+      <div class="card" style="--cc:var(--k3)"><h2 class="lab">Scheduled &amp; budgets</h2>
+        <div class="fwrap"><button class="b" id="tf_btn">Filter ⌄</button><div id="tf_pop" class="pop hide">
+          <label class="fl">Search item<input type="text" id="tf_q" placeholder="Type part of a name"></label>
+          <label class="fl">Type<select id="tf_t"><option value="">All</option><option>Scheduled</option><option>Budget</option><option>Limit</option></select></label>
+          <label class="fl">Status<select id="tf_s"><option value="">All</option><option value="paid">Paid</option><option value="overdue">Overdue</option><option value="soon">Due soon</option><option value="upcoming">Upcoming</option><option value="budget">Budget</option></select></label></div></div>
+        <div class="scroll"><table id="btab" class="grid"></table></div>
+        <div id="lim" class="hide"><h3 class="lsub">Limits <u class="hp" title="A yardstick only: a limit holds nothing back from Safe to spend, and the spending still counts as an Extra.">ⓘ</u></h3><div class="scroll"><table id="ltab" class="grid"></table></div></div>
+        <details class="more"><summary>Paid a bill another way (check, cash, another account)</summary><div id="marks"></div></details></div>
+      <div class="card" style="margin-top:14px;--cc:var(--k1)"><h2 class="lab">Extras this paycheck</h2><div id="extras"></div></div>
+      <div class="card" style="margin-top:14px;--cc:var(--k2)"><h2 class="lab">Income this paycheck <u class="hp" title="Planned paychecks come from the Plan tab. Actual is what landed in the bank. vs Plan is actual minus planned; vs Last is against the same source last paycheck. Extra income is any deposit in an Income category that isn't a paycheck.">ⓘ</u></h2><div class="scroll"><table id="inctab" class="grid"></table></div></div>
+      </div>
+      <aside class="ovside">
+    <div class="card hero">
+      <div><div class="lab">Safe to spend this paycheck</div><div class="big" id="safe"></div><span class="pill" id="held"></span>
+        <div class="daywrap"><div class="row"><span id="dayn"></span></div><div class="track"><i id="dayb"></i></div></div></div>
+      <div><div class="row"><span>Where the money goes</span><span id="work"></span></div><div class="mbar" id="mbar"></div><div class="legend" id="mleg"></div>
+        <div class="row dly"><span>Spending by day</span><span id="dtot" title="Everyday spending: extras and budget categories, not bills"></span></div><div class="legend" id="dleg"></div><div class="daily" id="daily" role="img"></div></div>
+    </div>
+        <div class="card" style="--cc:var(--k2)"><h2 class="lab" id="w_title">Where the money went</h2>
+          <div class="seg" id="wseg"><button data-w="spent" class="on">Spent so far</button><button data-w="plan">The plan</button></div><div id="went"></div></div>
+      </aside>
+    </div>
+  </section>
+
+  <section id="fc" class="hide"><div class="card soon">Loading…</div></section>
+
+  <section id="tx" class="hide">
+    <div class="card">
+      <h2 class="lab">Transactions</h2>
+      <div class="ctrl">
+        <div class="seg" id="scope"><button data-s="period" class="on">Selected period</button><button data-s="all">All</button></div>
+        <label class="tog"><input type="checkbox" id="unc"> <span id="unctxt">Uncategorized</span></label>
+        <label class="tog"><input type="checkbox" id="pend"> <span id="pendtxt">Pending</span></label>
+        <select id="tcat" aria-label="Category"></select>
+        <input type="search" id="tq" placeholder="Search descriptions">
+        <button class="b hide" id="autocat" style="margin-left:auto" title="Run your rules over the transactions that have no category yet.">Auto-categorize</button>
+        <button class="b pri" id="add">+ Add a transaction</button>
+      </div>
+      <div class="sum" id="sum"></div>
+      <div class="bulk hide" id="bulk"><b id="selinfo"></b><select id="mv"></select><button class="b pri" id="move">Move to category</button><button class="b" id="tosav" title="For extra income deposits (an Income category that isn't a paycheck). They stay in Income but come out of Left and Safe to spend, and add to the Savings balance.">Move to savings</button><button class="b danger" id="del">Delete</button><button class="b" id="clr">Clear</button></div>
+      <div class="scroll txs"><table id="ttab"></table></div>
+    </div>
+  </section>
+
+  <section id="pl" class="hide"><div class="card soon">Loading…</div></section>
+  <section id="an" class="hide"><div class="card soon">Loading…</div></section>
+  <section id="em" class="hide"><div class="card soon">Loading…</div></section>
+
+  <section id="setup" class="hide">
+    <div class="card"><h2 class="lab">Welcome</h2>
+      <p><b>How do you want to budget?</b> You can change this later on the Plan tab.</p>
+      <div class="seg" id="sd_mode"><button type="button" data-m="biweekly" class="on">Every two weeks</button><button type="button" data-m="monthly">Monthly</button></div>
+      <p class="hint" id="sd_hint" style="margin-top:8px"></p>
+      <div id="sd_bi"><label class="fl">First paycheck date<input type="date" id="sd_date"></label></div>
+      <div id="sd_mo" class="hide"><label class="fl">Start from month<input type="month" id="sd_month"></label><p class="hint" style="margin:-6px 0 12px">The earliest month you want to track. Bank transactions before it are ignored.</p>
+        <label class="fl">Each month starts on day<select id="sd_day"><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option><option value="6">6</option><option value="7">7</option><option value="8">8</option><option value="9">9</option><option value="10">10</option><option value="11">11</option><option value="12">12</option><option value="13">13</option><option value="14">14</option><option value="15">15</option><option value="16">16</option><option value="17">17</option><option value="18">18</option><option value="19">19</option><option value="20">20</option><option value="21">21</option><option value="22">22</option><option value="23">23</option><option value="24">24</option><option value="25">25</option><option value="26">26</option><option value="27">27</option><option value="28">28</option></select></label><p class="hint" style="margin:-6px 0 0">Most people pick 1. Pick the day your month really turns over, like payday, if that suits you better.</p></div>
+      <div class="ctrl" style="margin-top:12px"><button class="b pri" id="sd_go">Start my ledger</button><button class="b" id="sd_sample">Load sample data first</button></div>
+      <p class="hint" style="margin-top:12px">How this works: the ledger never connects to your bank. You download an export (CSV or Excel) from your bank's website
+        and import it here from time to time, using the import button on the left. Everything stays on this computer.</p>
+    </div>
+  </section>
+</div>
+
+<dialog id="dlgimp" aria-labelledby="ip_title">
+  <button class="ipx" id="ip_x" type="button" aria-label="Close">&times;</button>
+  <h3 id="ip_title">Import new transactions?</h3>
+  <p id="ip_msg" class="ipmsg"></p>
+  <label class="ipdrop" id="ip_drop">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg>
+    <span class="ipdt"><b id="ip_name">Choose your bank export</b><small id="ip_hint">CSV or Excel. Click here or drop the file in.</small></span>
+    <input type="file" id="ip_file" accept=".csv,.xlsx,.xls" aria-label="Bank export (CSV or Excel)">
+  </label>
+  <div id="ip_err" class="iperr" role="status" aria-live="polite"></div>
+  <div class="dbtn ipbtns"><button class="lnk" id="ip_no" type="button">Nothing new today</button><button class="b pri" id="ip_go" type="button" disabled title="Choose a file first">Import file</button></div>
+</dialog>
+<dialog id="dlg"><form method="dialog" id="addform">
+  <h3>Add a transaction</h3>
+  <label>Date <input type="date" id="a_date" required></label>
+  <label>Description <input type="text" id="a_desc" required></label>
+  <label>Amount (money out is negative) <input type="number" id="a_amt" step="0.01" required></label>
+  <label>Category <select id="a_cat"></select></label>
+  <div class="dbtn"><button class="b" value="cancel" formnovalidate>Cancel</button><button class="b pri" id="a_ok" value="ok">Add</button></div>
+</form></dialog>
+<nav class="rail" id="rail" aria-label="Menu">
+  <button class="rt" data-sec="menu" title="Menu" aria-label="Menu"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"/></svg></button>
+  <button class="rt" data-sec="look" title="Appearance" aria-label="Appearance"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3c-4.97 0-9 4.03-9 9s4.03 9 9 9c.83 0 1.5-.67 1.5-1.5 0-.39-.15-.74-.39-1.01-.23-.26-.38-.61-.38-.99 0-.83.67-1.5 1.5-1.5H16c2.76 0 5-2.24 5-5 0-4.42-4.03-8-9-8zm-5.5 9c-.83 0-1.5-.67-1.5-1.5S5.67 9 6.5 9 8 9.67 8 10.5 7.33 12 6.5 12zm3-4C8.67 8 8 7.33 8 6.5S8.67 5 9.5 5s1.5.67 1.5 1.5S10.33 8 9.5 8zm5 0c-.83 0-1.5-.67-1.5-1.5S13.67 5 14.5 5s1.5.67 1.5 1.5S15.33 8 14.5 8zm3 4c-.83 0-1.5-.67-1.5-1.5S16.67 9 17.5 9s1.5.67 1.5 1.5-.67 1.5-1.5 1.5z"/></svg></button>
+  <button class="rt" data-sec="lan" title="Phone access" aria-label="Phone access"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M17 1.01L7 1c-1.1 0-2 .9-2 2v18c0 1.1.9 2 2 2h10c1.1 0 2-.9 2-2V3c0-1.1-.9-1.99-2-1.99zM17 19H7V5h10v14z"/></svg></button>
+  <button class="rt" data-sec="tv" title="TV mode" aria-label="TV mode"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21 3H3c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h5v2h8v-2h5c1.1 0 1.99-.9 1.99-2L23 5c0-1.1-.9-2-2-2zm0 14H3V5h18v12z"/></svg></button>
+  <button class="rt" data-sec="imp" title="Import bank transactions" aria-label="Import bank transactions"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg></button>
+  <button class="rt" data-sec="test" title="Sample data" aria-label="Sample data"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 2v2h1v5.1L4.5 18.5C3.8 19.7 4.7 21 6 21h12c1.3 0 2.2-1.3 1.5-2.5L14 9.1V4h1V2H9zm3 9.2l3.6 5.8H8.4l3.6-5.8z"/></svg></button>
+</nav>
+<aside id="panel" aria-label="Settings panel"></aside>
+<dialog id="dlg2"><form method="dialog" id="dform"></form></dialog>
+<dialog id="dlg3" class="wide"><div class="dbtn" style="justify-content:space-between;margin:0 0 8px"><b>Payday email preview</b><button class="b" onclick="document.getElementById('dlg3').close()">Close</button></div><iframe id="pvframe" title="Email preview"></iframe></dialog>
+<div class="toast" id="toast"></div>
+<script src="app.js"></script>
+<script src="plan.js"></script>
+<script src="whatif.js"></script>
+<script src="forecast.js"></script>
+<script src="analysis.js"></script>
+<script src="settings.js"></script>
+<script src="email.js"></script>
+<script src="sort.js"></script>
+</body>
+</html>

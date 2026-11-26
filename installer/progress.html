@@ -1,0 +1,146 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Installing Personal Finance Ledger</title>
+<style>
+  :root {
+    --bg: #f4f6f9; --card: #ffffff; --ink: #1b2430; --muted: #5b6676; --line: #e1e6ec;
+    --accent: #2f6fed; --ok: #1d9a55; --bad: #d23f3f; --track: #e6ebf1;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #11151b; --card: #19202a; --ink: #e8edf3; --muted: #9aa6b5; --line: #29313c;
+      --accent: #5b8dff; --ok: #3ec47a; --bad: #ff6b6b; --track: #263040;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; min-height: 100vh; display: flex; align-items: center; justify-content: center;
+    background: var(--bg); color: var(--ink);
+    font: 16px/1.5 "Segoe UI", system-ui, -apple-system, sans-serif;
+  }
+  .card {
+    width: min(560px, 92vw); background: var(--card); border: 1px solid var(--line);
+    border-radius: 14px; padding: 32px 32px 26px; box-shadow: 0 6px 24px rgba(0, 0, 0, .06);
+  }
+  .brand { font-size: 13px; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); margin: 0 0 6px; }
+  h1 { font-size: 24px; margin: 0 0 6px; line-height: 1.25; }
+  .msg { margin: 0 0 22px; color: var(--muted); min-height: 3em; }
+  .bar { height: 14px; border-radius: 999px; background: var(--track); overflow: hidden; }
+  .fill {
+    height: 100%; width: 0; border-radius: 999px; background: var(--accent);
+    transition: width .25s linear, background-color .3s;
+    background-image: linear-gradient(110deg, rgba(255,255,255,0) 30%, rgba(255,255,255,.35) 50%, rgba(255,255,255,0) 70%);
+    background-size: 200% 100%; animation: shimmer 1.6s linear infinite;
+  }
+  .meta { display: flex; justify-content: space-between; margin: 8px 0 22px; font-size: 14px; color: var(--muted); }
+  ol { list-style: none; margin: 0; padding: 0; border-top: 1px solid var(--line); }
+  li { display: flex; align-items: center; gap: 12px; padding: 11px 0; border-bottom: 1px solid var(--line); color: var(--muted); }
+  .dot {
+    width: 22px; height: 22px; border-radius: 50%; flex: none; display: grid; place-items: center;
+    font-size: 13px; font-weight: 700; border: 2px solid var(--line); color: transparent;
+  }
+  li.done { color: var(--ink); }
+  li.done .dot { background: var(--ok); border-color: var(--ok); color: #fff; }
+  li.active { color: var(--ink); font-weight: 600; }
+  li.active .dot { border-color: var(--accent); animation: pulse 1.4s ease-in-out infinite; }
+  li.failed { color: var(--bad); font-weight: 600; }
+  li.failed .dot { background: var(--bad); border-color: var(--bad); color: #fff; }
+  .note { margin: 18px 0 0; font-size: 14px; color: var(--muted); }
+  body.done .fill { background-color: var(--ok); animation: none; background-image: none; }
+  body.error .fill { background-color: var(--bad); animation: none; background-image: none; }
+  body.error h1 { color: var(--bad); }
+  body.done h1 { color: var(--ok); }
+  @keyframes shimmer { from { background-position: 200% 0; } to { background-position: -200% 0; } }
+  @keyframes pulse { 0%, 100% { box-shadow: 0 0 0 0 rgba(47, 111, 237, .45); } 50% { box-shadow: 0 0 0 6px rgba(47, 111, 237, 0); } }
+  @media (prefers-reduced-motion: reduce) { .fill, li.active .dot { animation: none; } }
+</style>
+</head>
+<body>
+  <main class="card">
+    <p class="brand">Personal Finance Ledger setup</p>
+    <h1 id="title">Starting up</h1>
+    <p class="msg" id="msg">Getting things ready. This page updates by itself.</p>
+    <div class="bar" role="progressbar" aria-valuemin="0" aria-valuemax="100" id="bar"><div class="fill" id="fill"></div></div>
+    <div class="meta"><span id="pct">0%</span><span id="hint">Please leave this page open</span></div>
+    <ol id="steps"></ol>
+    <p class="note" id="note">Setup takes a few minutes the first time. You don't need to do anything unless Windows asks for permission: if it does, click Yes.</p>
+  </main>
+
+<script>
+(function () {
+  var STEPS = ["Getting ready", "Python", "Private space for the ledger", "Installing the ledger", "Opening the ledger"];
+  var cur = { step: 1, pct: 0, next: 8, state: "working", title: "Starting up", msg: "Getting things ready. This page updates by itself." };
+  var heardFromInstaller = false, startedAt = Date.now(), shown = 0;
+
+  var $ = function (id) { return document.getElementById(id); };
+  var list = $("steps");
+  STEPS.forEach(function (name) {
+    var li = document.createElement("li");
+    li.innerHTML = '<span class="dot">✓</span><span></span>';
+    li.lastChild.textContent = name;
+    list.appendChild(li);
+  });
+
+  // Ask for status.js again every second. The installer rewrites that file as it goes.
+  function poll() {
+    var s = document.createElement("script");
+    s.src = "status.js?t=" + Date.now();
+    s.onload = function () {
+      if (window.LL) { cur = window.LL; heardFromInstaller = true; }
+      s.parentNode && s.parentNode.removeChild(s);
+    };
+    s.onerror = function () { s.parentNode && s.parentNode.removeChild(s); };
+    document.head.appendChild(s);
+  }
+
+  function render() {
+    // The bar jumps up to each reported milestone, then creeps slowly toward the next one
+    // without ever reaching it, so it keeps moving during long steps.
+    var pct = Number(cur.pct) || 0, next = Number(cur.next) || pct;
+    if (cur.state === "working") {
+      if (shown < pct) { shown += Math.max((pct - shown) * 0.2, 0.15); if (shown > pct) shown = pct; }
+      else { var ceiling = Math.max(next - 1, pct); shown += (ceiling - shown) * 0.004; }
+    } else if (cur.state === "done") {
+      shown = 100;
+    } else if (shown < pct) {
+      shown = pct;  // on an error the bar stops where it was (or at the last reported step on a reload)
+    }
+    var rounded = Math.round(shown);
+    $("fill").style.width = shown + "%";
+    $("pct").textContent = cur.state === "error" ? "Stopped" : rounded + "%";
+    $("bar").setAttribute("aria-valuenow", rounded);
+
+    var waiting = !heardFromInstaller && Date.now() - startedAt > 15000;
+    $("title").textContent = waiting ? "Waiting for the installer" : cur.title;
+    $("msg").textContent = waiting
+      ? "Nothing has started yet. Close this page and double-click Install.bat again."
+      : cur.msg;
+
+    document.body.className = cur.state === "done" ? "done" : cur.state === "error" ? "error" : "";
+    $("hint").textContent = cur.state === "done" ? "Finished" : cur.state === "error" ? "Needs attention" : "Please leave this page open";
+    $("note").style.display = cur.state === "working" ? "" : "none";
+    document.title = cur.state === "done" ? "Personal Finance Ledger is ready"
+      : cur.state === "error" ? "Personal Finance Ledger setup stopped"
+      : "Installing Personal Finance Ledger (" + rounded + "%)";
+
+    var items = list.children, step = Number(cur.step) || 1;
+    for (var i = 0; i < items.length; i++) {
+      var n = i + 1, cls = "";
+      if (cur.state === "done" || n < step) cls = "done";
+      else if (n === step) cls = cur.state === "error" ? "failed" : "active";
+      items[i].className = cls;
+      items[i].firstChild.textContent = cls === "failed" ? "!" : "✓";
+    }
+  }
+
+  poll();
+  setInterval(poll, 1000);
+  setInterval(render, 100);
+  render();
+})();
+</script>
+</body>
+</html>
