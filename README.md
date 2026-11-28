@@ -1,6 +1,6 @@
 ﻿# Personal Finance Ledger
 
-A budgeting app that runs on your own Windows PC. Set it to budget **every two weeks** or **monthly**, add your income and
+A budgeting app that runs on your own Windows PC or Mac. Set it to budget **every two weeks** or **monthly**, add your income and
 bills, import a CSV or Excel export from your bank, and see what's safe to spend and where your cash is headed.
 
 **Private by design.** Everything stays on your computer. The app never connects to your bank, never signs in to anything,
@@ -10,6 +10,7 @@ and only answers requests from your own PC unless you turn on Phone access (off 
 
 **What's new**
 
+- **Now a desktop app.** The ledger opens in its own window instead of a browser tab, with a tray icon (menu bar on a Mac) that keeps it running when you close the window. No bookmark to break, no Python, no `.bat` files. Windows gets a normal installer and Mac gets a zip with the app. Your numbers live in one folder that installing or updating never touches. See [Get the desktop app](#get-the-desktop-app) below.
 - **Redesigned tabs.** Cash Forecast now leads with the paycheck table (with bars behind each paycheck's extra and rollover) and keeps the What-if planner in a side panel. The threshold slider is gone. Overview puts your safe-to-spend numbers in a side panel next to the bill tables. Plan has a section list on the left that follows you down the page. Transactions and Analysis get the same flatter cards and larger type.
 - **New Analysis tab.** Pick a scheduled bill (or all of them) and see what it really cost each pay period in one large chart, with the plan and trend lines. The top shows the biggest movers (bills costing more or less than usual, and missed payments), a date range filter narrows everything to the pay periods you choose, and the bill list can be searched, filtered (costing more, costing less, no change) and sorted. Credit cards and loans can be marked once and are judged against their minimum instead of showing up as swings. The chart shows calendar months (partial months striped), and the chart, summary tiles and movers all follow the bill list filter, so picking Internet or Regular bills shows that group's monthly total.
 - **Pick the time the payday email goes out.** The Email tab's Schedule section has a Send time picker. Saving it updates the Windows scheduled task that sends the email, and it shows when the next one goes out.
@@ -30,6 +31,20 @@ and only answers requests from your own PC unless you turn on Phone access (off 
 - **Plan tab:** the expense column says "Expense name", and bills and budgets now say plainly that they're held back from your totals.
 - **One-click updates:** download the update zip, double-click `Update.bat`, and it finds your ledger and updates it. Your numbers are never touched.
 - **Easier install:** a progress page shows each step while it installs, with no black window.
+
+## Get the desktop app
+
+**[Download the latest release](https://github.com/Prisonmike1108/Personal-Finance-Ledger/releases/latest)** and pick your file under *Assets*:
+
+- **Windows:** `Personal-Finance-Ledger-v…-Setup.exe`. Run it, click through, and open **Personal Finance Ledger** from the Start menu. It installs just for you (no administrator password).
+- **Mac:** `…-mac-apple-silicon.zip` for any Mac from late 2020 on, or `…-mac-intel.zip` for older ones. Unzip it and drag the app into **Applications**.
+
+The first time, Windows may say it protected your PC (choose **More info**, then **Run anyway**), and a Mac may say the app can't be checked (right-click the app, choose **Open**, then **Open**). That's because the app isn't signed by a paid publisher. Nothing is wrong with the file.
+
+Closing the window sends the ledger to the tray (Windows) or menu bar (Mac); choose **Quit** from that icon to stop it. To update, install the newer version over the old one.
+Your numbers are kept in `%APPDATA%\Personal Finance Ledger\My Ledger Data` on Windows and `~/Library/Application Support/Personal Finance Ledger/My Ledger Data` on a Mac. Installing, updating and uninstalling never touch that folder, so copy it somewhere safe to back up. This edition has no payday email.
+
+---
 
 **Already have the ledger? Update it in three steps.**
 

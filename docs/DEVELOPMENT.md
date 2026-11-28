@@ -84,3 +84,15 @@ part of the repository, so they are a way to personalise one copy.
 | `app_name` | "Personal Finance Ledger" | The name shown in the page header and the browser tab |
 | `hide_budget_mode` | `false` | Hides the "How you budget" card on the Plan tab |
 | `dev_reload` | `false` | While working on the page files, the open tab reloads itself when one changes |
+
+## The desktop app
+
+`desktop_app.py` runs the same ledger in a native window with a tray icon (`python desktop_app.py`, or `--no-window` for the server alone). It needs `requirements-desktop.txt`.
+
+```
+python tools/make_icon.py                         # redraws assets/icon.* (only if you change the icon)
+python tools/build_desktop.py --version dev --smoke-only   # build the app folder and test it
+python tools/build_desktop.py --version 1.2       # Windows: Setup.exe (needs Inno Setup 6, else a zip); Mac: a zip with the .app
+```
+
+Each build must run on the kind of computer it targets, so the GitHub Action (`.github/workflows/release.yml`) builds Windows, Mac (Apple silicon) and Mac (Intel) when you push a tag like `v1.2`, then attaches the files to a Release. Run it by hand from the Actions tab to try a build without a tag.

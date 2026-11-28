@@ -1,0 +1,9 @@
+# What the desktop app is built from (tools/build_desktop.py). Running it from the source needs the first four plus the next two.
+pandas==2.2.3
+numpy==2.2.1
+openpyxl==3.1.5
+pillow>=10.0
+pywebview>=5.0
+pystray>=0.19
+# build only
+pyinstaller>=6.0
