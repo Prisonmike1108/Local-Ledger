@@ -11,7 +11,7 @@ const W = {step: 0, mode: "biweekly", date: "", month: "", day: 1,
 const STEPS = ["How you budget", "What you take home", "Recurring bills", "Bank transactions"];
 const CADS = {wk: ["Every week", 52], bi: ["Every two weeks", 26], mo: ["Every month", 12], yr: ["Every year", 1]};
 const FREQ = {pay: "Every paycheck", Monthly: "Monthly", Quarterly: "Every 3 months", Yearly: "Yearly"};
-const QUICK = ["Rent or mortgage", "Electric", "Water", "Internet", "Phone", "Car payment", "Car insurance", "Streaming", "Credit card minimum", "Student loan"];
+const QUICK = ["Rent", "Mortgage", "Electric", "Water", "Internet", "Phone", "Car payment", "Car insurance", "Streaming", "Credit card minimum", "Student loan"];
 const MONTHS = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
 
 const perYear = () => W.mode === "biweekly" ? 26 : 12;
@@ -166,29 +166,96 @@ async function saveAll() {
 }
 
 // ---- step 4 ----
+// Pick a file, then match its columns: the ledger's guess is filled in, a few rows of the file are shown with the matched
+// columns highlighted, and the first row is read back the way it will land in the ledger, so a wrong pick shows before importing.
 function step3() {
   $("wz_card").innerHTML = `<h1>Bring in your bank transactions</h1>
     <p class="lead">Optional, but it's what makes the ledger useful: it files what you've spent so far. The ledger never connects to your bank. You download a file from your bank's website and give it to the ledger here.</p>
     <label class="wz-drop" id="wz_drop"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg>
       <span><b id="wz_fname">Choose your bank export</b><small id="wz_fhint">A CSV or Excel file. Click here or drop it in. A range like the last 90 days works well.</small></span>
       <input type="file" id="wz_file" accept=".csv,.xlsx,.xls"></label>
+    <div id="wz_map"></div>
     <div class="wz-msg" id="wz_msg" role="status" aria-live="polite"></div>
-    <details class="wz-how"><summary>How do I get this file?</summary><p>Sign in to your bank's website, open your account's transactions, and look for Download or Export. Choose CSV (or Excel) and a date range, then save it. Then pick it here.</p></details>
+    <details class="wz-how" id="wz_how"><summary>How do I get this file?</summary><p>Sign in to your bank's website, open your account's transactions, and look for Download or Export. Choose CSV (or Excel) and a date range, then save it. Then pick it here.</p></details>
     ${nav(false, true, W.imported ? "Open my ledger" : "Skip for now and open my ledger", `<span></span>`)}`;
-  const drop = $("wz_drop");
+  const drop = $("wz_drop"), msg = (cls, t) => { $("wz_msg").className = "wz-msg " + cls; $("wz_msg").textContent = t; };
   ["dragenter", "dragover"].forEach(ev => drop.addEventListener(ev, () => drop.classList.add("over")));
   ["dragleave", "drop"].forEach(ev => drop.addEventListener(ev, () => drop.classList.remove("over")));
   $("wz_file").onchange = async () => {
     const f = $("wz_file").files[0]; if (!f) return;
-    $("wz_fname").textContent = f.name; $("wz_msg").className = "wz-msg busy"; $("wz_msg").textContent = "Reading your file…";
+    $("wz_fname").textContent = f.name; $("wz_fhint").textContent = "Click to choose a different file."; $("wz_map").innerHTML = "";
+    msg("busy", "Reading your file…");
     try {
-      const data = await b64(f), pv = await api("/api/import/preview", {name: f.name, data}), g = pv.guess;
-      if (!g.confident) { $("wz_msg").className = "wz-msg warn"; $("wz_msg").textContent = "We couldn't be sure which columns are the date and amount. Open your ledger, then use the import button on the left edge to check them."; return; }
-      const r = await api("/api/import/commit", {name: f.name, data, dcol: g.date, acol: g.amount, debit: g.debit, credit: g.credit, scol: g.desc, spending: g.spending === "negative" ? "negative" : "positive", append: true});
-      W.imported = 1; $("wz_msg").className = "wz-msg ok"; $("wz_msg").textContent = r.message; $("wz_next").textContent = "Open my ledger";
-    } catch (e) { $("wz_msg").className = "wz-msg warn"; $("wz_msg").textContent = "Couldn't read that file: " + (e.message || e); }
+      const data = await b64(f), pv = await api("/api/import/preview", {name: f.name, data});
+      msg("", ""); drawMap(f, data, pv);
+    } catch (e) { msg("warn", "Couldn't read that file: " + (e.message || e)); }
   };
   $("wz_next").onclick = () => { $("wz_next").disabled = true; location.reload(); };
+}
+
+// a number as banks write it: "$1,234.56", "-45.20", "(45.20)", "45.20-"; blank when it isn't one
+function bankNum(v) {
+  let t = String(v ?? "").trim(); if (!t) return null;
+  const neg = /^\(.*\)$/.test(t) || /-$/.test(t) || /^-/.test(t);
+  t = t.replace(/[()$£€,\s-]/g, "");
+  const n = parseFloat(t); return isNaN(n) ? null : (neg ? -n : n);
+}
+
+function drawMap(f, data, pv) {
+  const g = pv.guess, cols = pv.columns, sample = (pv.sample || []).slice(0, 4);
+  const M = {date: g.date || "", desc: g.desc || "", amount: g.split ? "" : (g.amount || ""), debit: g.debit || "", credit: g.credit || "",
+    spending: g.spending === "negative" ? "negative" : "positive", typed: g.spending === "typed"};
+  const opt = (sel, none) => (none ? `<option value=""${sel === "" ? " selected" : ""}>${none}</option>` : `<option value=""${sel === "" ? " selected" : ""}>Choose a column</option>`)
+    + cols.map(c => `<option${c === sel ? " selected" : ""}>${esc(c)}</option>`).join("");
+  $("wz_how").classList.add("hide");
+  $("wz_map").innerHTML = `<div class="wz-mapbox">
+    <div class="wz-maphead"><b>Match your columns</b><span>${pv.rows.toLocaleString()} row${pv.rows === 1 ? "" : "s"} in ${esc(f.name)}</span></div>
+    ${g.confident ? `<p class="wz-mapnote ok">We matched these from your file's headings. Check the first row below, then import.</p>`
+      : `<p class="wz-mapnote warn">We weren't sure about every column. Pick the right ones, and check the first row below.</p>`}
+    <div class="wz-mapgrid">
+      <label><span>Date</span><select data-m="date">${opt(M.date)}</select></label>
+      <label><span>Description</span><select data-m="desc">${opt(M.desc)}</select></label>
+      <label><span>Amount</span><select data-m="amount">${opt(M.amount, "Two columns: money out and money in")}</select></label>
+      <label class="wz-split"><span>Money out</span><select data-m="debit">${opt(M.debit)}</select></label>
+      <label class="wz-split"><span>Money in</span><select data-m="credit">${opt(M.credit)}</select></label>
+      <label class="wz-sign"><span>Money you spend shows as</span><select data-m="spending"><option value="positive"${M.spending === "positive" ? " selected" : ""}>Positive numbers (45.20)</option><option value="negative"${M.spending === "negative" ? " selected" : ""}>Negative numbers (-45.20)</option></select></label>
+    </div>
+    <div class="wz-peek"><table><thead><tr>${cols.map(c => `<th data-col="${esc(c)}"><em></em>${esc(c)}</th>`).join("")}</tr></thead>
+      <tbody>${sample.map(r => `<tr>${cols.map(c => `<td data-col="${esc(c)}">${esc(r[c] ?? "")}</td>`).join("")}</tr>`).join("")}</tbody></table></div>
+    <div class="wz-reads"><span>Your first row will read</span><div id="wz_reads"></div></div>
+    <div class="wz-mapgo"><button class="b pri" type="button" id="wz_import">Import ${pv.rows.toLocaleString()} transaction${pv.rows === 1 ? "" : "s"}</button></div>
+  </div>`;
+  const box = $("wz_map"), sel = k => box.querySelector(`[data-m="${k}"]`);
+  const refresh = () => {
+    const split = M.amount === "";
+    box.querySelectorAll(".wz-split").forEach(x => x.classList.toggle("hide", !split));
+    box.querySelector(".wz-sign").classList.toggle("hide", split || M.typed);
+    const tags = {[M.date]: "Date", [M.desc]: "Description"};
+    if (split) { if (M.debit) tags[M.debit] = "Money out"; if (M.credit) tags[M.credit] = "Money in"; } else if (M.amount) tags[M.amount] = "Amount";
+    box.querySelectorAll("[data-col]").forEach(el => { const t = tags[el.dataset.col]; el.classList.toggle("on", !!t); const em = el.querySelector("em"); if (em) em.textContent = t || ""; });
+    // read the first row back the way it will be filed
+    const r = sample[0] || {}; let amt = null;
+    if (split) { const o = bankNum(r[M.debit]), i = bankNum(r[M.credit]); amt = (i ? Math.abs(i) : 0) - (o ? Math.abs(o) : 0); if (o == null && i == null) amt = null; }
+    else { const v = bankNum(r[M.amount]); amt = v == null ? null : (M.typed ? v : M.spending === "positive" ? -v : v); }
+    const ready = M.date && M.desc && (split ? M.debit && M.credit : M.amount);
+    $("wz_reads").innerHTML = !ready ? `<i>Pick the date, description and amount columns.</i>`
+      : `<b>${esc(r[M.date] ?? "")}</b><span class="d">${esc(r[M.desc] ?? "")}</span>${amt == null ? `<span class="a">no amount</span>`
+        : `<span class="a ${amt < 0 ? "out" : "in"}">${amt < 0 ? "Spent " + money(-amt) : "Came in " + money(amt)}</span>`}`;
+    $("wz_import").disabled = !ready;
+  };
+  box.querySelectorAll("[data-m]").forEach(s => s.onchange = () => { M[s.dataset.m] = s.value; refresh(); });
+  refresh();
+  $("wz_import").onclick = async () => {
+    const b = $("wz_import"); b.disabled = true; b.textContent = "Importing…";
+    try {
+      const split = M.amount === "";
+      const r = await api("/api/import/commit", {name: f.name, data, dcol: M.date, acol: split ? "" : M.amount, debit: split ? M.debit : "", credit: split ? M.credit : "",
+        scol: M.desc, spending: M.spending, append: true});
+      W.imported = 1; box.innerHTML = ""; $("wz_msg").className = "wz-msg ok"; $("wz_msg").textContent = r.message;
+      $("wz_fname").textContent = "Imported " + f.name; $("wz_fhint").textContent = "Have another account's file? Choose it too.";
+      $("wz_next").textContent = "Open my ledger";
+    } catch (e) { b.disabled = false; b.textContent = "Try again"; $("wz_msg").className = "wz-msg warn"; $("wz_msg").textContent = "Couldn't import: " + (e.message || e); }
+  };
 }
 
 const STEP_FNS = [step0, step1, step2, step3];

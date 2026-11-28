@@ -75,3 +75,24 @@ body.setup #setup{display:block}
 .wz-priv{margin:14px 0 0;font-size:.82rem;color:var(--mu);line-height:1.45}
 @media(prefers-reduced-motion:reduce){.wz-choices button{transition:none}}
 body.setup .banner{display:none}
+
+/* step 4: matching the file's columns */
+.wz-mapbox{margin-top:16px;border:1px solid var(--line);border-radius:14px;padding:18px 18px 16px;background:color-mix(in srgb,var(--card2) 40%,transparent)}
+.wz-maphead{display:flex;justify-content:space-between;align-items:baseline;gap:12px;flex-wrap:wrap}.wz-maphead b{font-size:1.1rem}.wz-maphead span{color:var(--mu);font-size:.88rem}
+.wz-mapnote{margin:8px 0 14px;font-size:.92rem}.wz-mapnote.ok{color:color-mix(in srgb,var(--tx) 78%,var(--card))}.wz-mapnote.warn{color:var(--amber-t,#eb5);font-weight:600}
+.wz-mapgrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px 14px}
+@media(max-width:760px){.wz-mapgrid{grid-template-columns:1fr 1fr}}
+.wz-mapgrid label{display:flex;flex-direction:column;gap:5px;margin:0;min-width:0}.wz-mapgrid label>span{font-size:.84rem;font-weight:650;color:color-mix(in srgb,var(--tx) 75%,var(--card))}
+.wz-mapgrid select{width:100%;min-width:0}
+.wz-peek{margin-top:16px;overflow-x:auto;border:1px solid var(--line);border-radius:10px}
+.wz-peek table{border-collapse:collapse;width:100%;font-size:.84rem;font-variant-numeric:tabular-nums}
+.wz-peek th,.wz-peek td{padding:7px 10px;text-align:left;white-space:nowrap;border-bottom:1px solid color-mix(in srgb,var(--line) 70%,transparent);max-width:260px;overflow:hidden;text-overflow:ellipsis}
+.wz-peek th{font-weight:600;color:var(--mu);vertical-align:bottom;background:color-mix(in srgb,var(--card) 60%,transparent)}
+.wz-peek th em{display:block;font-style:normal;font-size:.72rem;font-weight:700;color:var(--ac);min-height:1.1em}
+.wz-peek .on{background:color-mix(in srgb,var(--ac) 12%,transparent);color:var(--tx)}
+.wz-peek tr:last-child td{border-bottom:0}
+.wz-reads{margin-top:14px;padding:12px 14px;border-radius:10px;border:1px dashed color-mix(in srgb,var(--ac) 45%,var(--line))}
+.wz-reads>span{display:block;font-size:.8rem;color:var(--mu);margin-bottom:5px}
+#wz_reads{display:flex;gap:14px;align-items:baseline;flex-wrap:wrap;font-size:.98rem}#wz_reads .d{flex:1 1 200px;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+#wz_reads .a{font-weight:700;font-variant-numeric:tabular-nums}#wz_reads .a.out{color:var(--red-t,#f88)}#wz_reads .a.in{color:var(--green-t,#7dd)}
+.wz-mapgo{display:flex;justify-content:flex-end;margin-top:14px}
