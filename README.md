@@ -6,86 +6,37 @@ bills, import a CSV or Excel export from your bank, and see what's safe to spend
 **Private by design.** Everything stays on your computer. The app never connects to your bank, never signs in to anything,
 and only answers requests from your own PC unless you turn on Phone access (off by default, see below). No data is stored in this repo.
 
-## Latest update: <!--VER-->Nov 25, 2026<!--/VER-->
-
-**What's new**
-
-- **Now a desktop app.** The ledger opens in its own window instead of a browser tab, with a tray icon (menu bar on a Mac) that keeps it running when you close the window. No bookmark to break, no Python, no `.bat` files. Windows gets a normal installer and Mac gets a zip with the app. Your numbers live in one folder that installing or updating never touches. See [Get the desktop app](#get-the-desktop-app) below.
-- **Redesigned tabs.** Cash Forecast now leads with the paycheck table (with bars behind each paycheck's extra and rollover) and keeps the What-if planner in a side panel. The threshold slider is gone. Overview puts your safe-to-spend numbers in a side panel next to the bill tables. Plan has a section list on the left that follows you down the page. Transactions and Analysis get the same flatter cards and larger type.
-- **New Analysis tab.** Pick a scheduled bill (or all of them) and see what it really cost each pay period in one large chart, with the plan and trend lines. The top shows the biggest movers (bills costing more or less than usual, and missed payments), a date range filter narrows everything to the pay periods you choose, and the bill list can be searched, filtered (costing more, costing less, no change) and sorted. Credit cards and loans can be marked once and are judged against their minimum instead of showing up as swings. The chart shows calendar months (partial months striped), and the chart, summary tiles and movers all follow the bill list filter, so picking Internet or Regular bills shows that group's monthly total.
-- **Pick the time the payday email goes out.** The Email tab's Schedule section has a Send time picker. Saving it updates the Windows scheduled task that sends the email, and it shows when the next one goes out.
-- **Fixes from a code audit.** Hand-added transactions now reduce Safe to spend, pending holds and refunds that match a spend are no longer counted twice, and phone access is tougher to guess into: PINs need 6 or more characters, wrong tries are limited even when sent all at once, and there is a Sign out all phones button.
-- **New background: Prismatic parallax drift.** Pick it in Settings, Appearance, Background. Colors and layering by [Codioful](https://codioful.com/visual/prismatic-parallax-drift) (free to use with credit); the slow drift is added here.
-- **New backgrounds: Weather.** Settings, Appearance, Background now has a Weather group: Sunny, Cloudy, Rain, Storm, Snow and Fog, each an animated street scene behind the page.
-- **Renamed to Personal Finance Ledger.** The first time you open it you're asked what to call yours. Change it any time in Settings.
-- **Income this paycheck.** A new Overview table compares each planned paycheck (from the Plan tab) with what landed, plus extra income, with up and down arrows.
-- **One time future expense.** Plan something you'll pay once (a tattoo, a deposit) in the pay period it falls in. When the real charge is imported, the Transactions tab offers to file it and removes the planned entry.
-- **Pending filter and badge.** Pending bank holds are flagged in Transactions and can be filtered.
-- **Rename extra categories** right in the table on the Plan tab.
-
-- **Phone access (optional).** Turn it on in Settings, pick a PIN, and open the ledger from a phone on your home Wi-Fi. It's off by default, only accepts devices on your home network, and every phone has to enter the PIN.
-- **Pending holds are flagged.** Transactions the bank hasn't posted yet show an amber Pending badge, so you can see which ones are holds that already count against Safe to spend.
-- **Remember this?** When you file a bank transaction under a category, the ledger offers to remember that merchant, so the next ones file themselves.
-- **Older paychecks show up.** Transactions from before your start date now get their own earlier pay periods after you import.
-- **Cash Forecast:** it stops at one paycheck's income, and Savings and Debt have dollar boxes that match the sliders.
-- **Plan tab:** the expense column says "Expense name", and bills and budgets now say plainly that they're held back from your totals.
-- **One-click updates:** download the update zip, double-click `Update.bat`, and it finds your ledger and updates it. Your numbers are never touched.
-- **Easier install:** a progress page shows each step while it installs, with no black window.
-
 ## Get the desktop app
 
-**[Download the latest release](https://github.com/Prisonmike1108/Personal-Finance-Ledger/releases/latest)** and pick your file under *Assets*:
+**[Download the app](https://github.com/Prisonmike1108/Personal-Finance-Ledger/releases/latest)** and pick your file under *Assets*:
 
 - **Windows:** `Personal-Finance-Ledger-v…-Setup.exe`. Run it, click through, and open **Personal Finance Ledger** from the Start menu. It installs just for you (no administrator password).
 - **Mac:** `…-mac-apple-silicon.zip` for any Mac from late 2020 on, or `…-mac-intel.zip` for older ones. Unzip it and drag the app into **Applications**.
 
 The first time, Windows may say it protected your PC (choose **More info**, then **Run anyway**), and a Mac may say the app can't be checked (right-click the app, choose **Open**, then **Open**). That's because the app isn't signed by a paid publisher. Nothing is wrong with the file.
 
-Closing the window sends the ledger to the tray (Windows) or menu bar (Mac); choose **Quit** from that icon to stop it. To update, install the newer version over the old one.
+Closing the window sends the ledger to the tray (Windows) or menu bar (Mac); choose **Quit** from that icon to stop it. To update later, install the newer version over the old one.
 Your numbers are kept in `%APPDATA%\Personal Finance Ledger\My Ledger Data` on Windows and `~/Library/Application Support/Personal Finance Ledger/My Ledger Data` on a Mac. Installing, updating and uninstalling never touch that folder, so copy it somewhere safe to back up. This edition has no payday email.
 
----
+## What's in it
 
-**Already have the ledger? Update it in three steps.**
+- **Overview:** safe to spend this paycheck, the bills due and paid, extras, income, and where the money is going.
+- **Cash Forecast:** a paycheck-by-paycheck table of what's left and your rollover, with a What-if planner for putting some of your extra toward savings or debt.
+- **Transactions:** import from your bank, sort into categories, and let rules file the rest.
+- **Analysis:** what each scheduled bill really cost, the biggest movers, and cards and loans judged against their minimums.
+- **Plan:** your income, bills, budgets, limits, one-time expenses and category rules.
+- **Looks:** themes, light and dark, and animated backgrounds including weather scenes.
+- **Phone access (optional):** use it from a phone on your home Wi-Fi, with a PIN. Off by default.
 
-1. **[Download the latest update zip](https://github.com/Prisonmike1108/Personal-Finance-Ledger/tree/main/updates)**: click the zip, then the download button.
-2. Right-click the zip, choose **Properties**, tick **Unblock** if you see it, click **OK**, then right-click it again and choose **Extract all**.
-3. In the extracted folder, double-click **`Update.bat`**. It finds your Personal Finance Ledger on your computer, updates it and reopens it.
-
-Your numbers stay in the `finance_data/` folder, which an update never touches. The top of the ledger shows the date of the version
-you have. After this, there's an even easier way: double-click `Update.bat` inside your own Personal Finance Ledger folder. It downloads the newest version straight from GitHub (no account or sign-in needed), updates your ledger and reopens it.
-
----
-
-## First time? Install it
-
-This download already includes the latest update above, so a new install needs nothing else.
-
-1. On this page click the green **Code** button, then **Download ZIP**.
-2. **Before you unzip**, right-click the `.zip` file itself, choose **Properties**, tick **Unblock** at the bottom (if you see it),
-   click **OK**, and then unzip it somewhere permanent, like your Documents folder. This stops Windows from blocking the files. See
-   [If Windows blocks it](#if-windows-blocks-it-smart-app-control) below.
-3. Double-click **`Install.bat`**. There's no black window. A **progress page** opens in your browser with a progress bar and
-   the current step, and the installer works in the background. If you don't have Python 3.11 or newer, it installs Python
-   for you (click **Yes** if Windows asks for permission), then sets up a private environment, installs what it needs and
-   opens the app in a new tab. It takes a few minutes the first time. If the progress page says "One more step", just
-   double-click `Install.bat` again. If something fails, the page says so and opens `install.log` with the details.
-4. Next time, double-click **`Open Ledger.pyw`**. To shut it down, double-click **`Stop Ledger.bat`**.
-
-(Mac or Linux: see [docs/DEVELOPMENT.md](docs/DEVELOPMENT.md#any-os-by-hand).)
-
-### If Windows blocks it (Smart App Control)
+## If Windows blocks it (Smart App Control)
 
 Windows 11 has a feature called **Smart App Control** that blocks programs it doesn't recognize. This app isn't signed by a
 paid publisher, so it can be blocked, and the message usually says an app or file was blocked. Nothing is wrong with the file.
 
 Try these in order:
 
-1. **Unblock the zip first.** Right-click the `.zip` file, choose **Properties**, tick **Unblock**, click **OK**, then unzip it
-   again. Run everything from the unzipped folder, not from inside the zip window. This fixes it most of the time.
-2. **Run `Help - Windows Blocked It.bat`.** It clears the "downloaded from the internet" mark from every file in the folder
-   and tells you whether Smart App Control is on. (If Windows blocks this helper too, go back to step 1.)
-3. **Turn Smart App Control off.** Open **Windows Security**, then **App & browser control**, then **Smart App Control
+1. **Unblock the download first.** Right-click the `Setup.exe` file, choose **Properties**, tick **Unblock** at the bottom (if you see it), click **OK**, then run it again. This fixes it most of the time.
+2. **Turn Smart App Control off.** Open **Windows Security**, then **App & browser control**, then **Smart App Control
    settings**, and choose **Off**. On some versions of Windows you can't turn it back on afterward, so only do this if you're
    comfortable with that.
 
@@ -113,20 +64,16 @@ after that most are filed automatically.
 
 ## Your data
 
-Your numbers are saved in the `finance_data/` folder inside the app folder. Back it up by
-copying that folder. Before every change the old version is saved to a `backups` folder inside it, and the **Undo** button at the
-top puts it back.
+Your numbers are saved in one folder (see above for where). Back it up by copying that folder. Before every change the old version is saved to a `backups` folder inside it, and the **Undo** button at the top puts it back.
 
 ## Updating
 
-See **Latest update** at the top. In short: double-click `Update.bat`.
-
-(Maintainers: `python tools/build_update.py --date YYYY-MM-DD` builds the zip into `updates/`, replacing the older one, and stamps the date into `VERSION`.)
+Download the newer `Setup.exe` (or Mac zip) from the [latest release](https://github.com/Prisonmike1108/Personal-Finance-Ledger/releases/latest) and install it over the old one. Your numbers aren't touched.
 
 ## Good to know
 
 - It only opens on this computer. Nobody else on your network can see it.
-- Closing the browser tab leaves it running quietly in the background. Use **Stop Personal Finance Ledger** (or **Stop Ledger.bat**) to shut it down.
+- Closing the window leaves it running in the tray (menu bar on a Mac). Choose **Quit** from that icon to shut it down.
 - It's a budgeting tool, not financial advice.
 - If something looks wrong, nothing is lost: use **Undo**, or restore a file from the `backups` folder.
 
@@ -141,3 +88,7 @@ The ledger normally answers only the PC it runs on. To use it from a phone on th
 3. On your phone, open the address it shows (something like `http://192.168.1.23:8600`) and enter the PIN.
 
 Good to know: the PC has to be on with the ledger running. The first time, Windows may ask about its firewall: allow it on private networks. It only works on your home network (devices on the internet are refused), the connection is plain HTTP, so use it at home, and only this PC can change the setting or the PIN. Turn it off in the same place. Changing the PIN signs every phone out. After five wrong PINs a device waits a minute.
+
+## Run it from the source (advanced)
+
+If you'd rather run the code than the installer: click **Code**, then **Download ZIP** on this page, right-click the `.zip` and **Unblock** it (if you see that option), unzip it somewhere permanent and double-click **`Install.bat`**. It sets up Python and a private environment for you and opens the ledger in your browser. Next time, double-click **`Open Ledger.pyw`**; **`Stop Ledger.bat`** shuts it down. Your numbers are then in the `finance_data/` folder. On a Mac or Linux, see [docs/DEVELOPMENT.md](docs/DEVELOPMENT.md#any-os-by-hand).

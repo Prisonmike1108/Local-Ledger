@@ -1,4 +1,0 @@
-# Pinned to the exact versions the ledger is developed and tested with, so the download behaves the same for everyone.
-pandas==2.2.3
-numpy==2.2.1
-openpyxl==3.1.5

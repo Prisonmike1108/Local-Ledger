@@ -23,7 +23,7 @@ the Python code changes; the pages in `ledger_html/static/` only need a browser 
 | `FinanceEmail.py` | Builds and sends an optional payday email, using the same numbers as the app |
 | `EmailArt.py` | Draws the seasonal art in the email |
 | `Open Ledger.pyw`, `Stop Ledger.bat`, `Install.bat` | Start, stop and set up on Windows |
-| `release/`, `tools/build_release.py`, `.github/workflows/release.yml` | Builds the no-code Windows download |
+| `desktop_app.py`, `tools/build_desktop.py`, `tools/installer.iss`, `.github/workflows/release.yml` | The desktop app and the builds that make the Windows installer and the Mac zips |
 | `email_assets/`, `themes.json` | Email images and colour themes |
 
 ## Data
@@ -35,20 +35,6 @@ plus `Transactions/` and `secrets.toml`, is listed in `.gitignore` so personal d
 
 The app listens on `127.0.0.1` only and refuses any request that doesn't come from the PC itself. There are no sign-ins, and
 nothing is exposed to the local network.
-
-## Building the Windows download
-
-A GitHub Action builds a Windows zip with its own copy of Python inside and attaches it to a Release.
-
-1. Push a version tag: `git tag v1.0.0` then `git push origin v1.0.0`. (Or run the **Build the Windows download** workflow by hand
-   from the Actions tab to get the zip as a build artifact without a Release.)
-2. When the build finishes, the zip is on the repo's **Releases** page.
-3. The zip holds only the app and a plain-English **START HERE.txt**: no email feature (it hides itself when the email code is
-   missing), no data, no secrets. Data lives in a **My Ledger Data** folder beside the app, so updating never touches it.
-
-To build it on your own PC instead (needs internet; downloads Python and the packages):
-`python tools/build_release.py --version 1.0.0` writes `dist/Personal-Finance-Ledger-v1.0.0-windows.zip`. Add `--stage-only` to assemble
-and test the folder without downloading anything.
 
 ## Payday email (optional, source install only)
 
