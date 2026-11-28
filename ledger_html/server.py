@@ -746,7 +746,11 @@ def expenses_save(rows: list, starts_on: dict, cancels: dict) -> str:
     edited, _clash, _nm = _clean_master(rows, c)
     d = lambda m: {k: date.fromisoformat(v) for k, v in (m or {}).items()}
     fd.backup_recurring()
-    new_plan, stats = fd.sync_recurring(c.plan, edited, c.starts, date.today(), d(cancels), d(starts_on))
+    # the first bills ever saved (right after setup) fill the whole first pay period, including days already gone, so the
+    # current period shows every bill in it; after that, changes only apply from today on and anything already due stays as it was
+    first = c.plan.empty and bool(c.starts)
+    cutoff = date.fromisoformat(min(c.starts)) if first else date.today()
+    new_plan, stats = fd.sync_recurring(c.plan, edited, c.starts, cutoff, d(cancels), d(starts_on))
     save("recurring", edited)
     save("plan", new_plan, keep_backup=True)
     msg = "Saved. Bills due from today on now follow your list; anything already due is unchanged."
@@ -1207,6 +1211,8 @@ def setup_period(b: dict) -> str:
         start = fd.month_start(y, m, day)
     else:
         start = date.fromisoformat(str(b["date"]))  # a real date, or this raises
+        while start > date.today():  # a paycheck that's still coming: start at the one before it, so today is in the first pay period
+            start -= timedelta(days=fd.PERIOD_DAYS)
     _save_layout([{"from": start.isoformat(), "mode": mode, "day": day}], auto_periods=True)
     save("periods", pd.DataFrame({"period_start": [start.isoformat()]}))
     return "Your first " + ("month" if mode == "monthly" else "pay period") + " is set."
