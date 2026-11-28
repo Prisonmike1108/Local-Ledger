@@ -1580,10 +1580,18 @@ def lan_ips() -> list:
             found.append(s.getsockname()[0])
     except OSError:
         pass
-    try:
-        found += socket.gethostbyname_ex(socket.gethostname())[2]
-    except OSError:
-        pass
+    # looking up this computer's own name can stall for many seconds on a Mac or a network with odd DNS, so give it two seconds at most
+    named: list = []
+
+    def by_name() -> None:
+        try:
+            named.extend(socket.gethostbyname_ex(socket.gethostname())[2])
+        except OSError:
+            pass
+    t = threading.Thread(target=by_name, daemon=True)
+    t.start()
+    t.join(2)
+    found += named
     out = []
     for a in found:
         if a not in out and _private_ip(a) and not a.startswith("127."):
@@ -1595,7 +1603,7 @@ def lan_state() -> dict:
     cfg = lan_cfg()
     return dict(enabled=bool(cfg.get("enabled")), has_pin=bool(cfg.get("hash")), running=LAN["srv"] is not None, port=PORT,
                 weak=bool(cfg.get("hash")) and int(cfg.get("len") or 0) < 6,
-                urls=[f"http://{a}:{PORT}" for a in lan_ips()])
+                urls=[f"http://{a}:{PORT}" for a in lan_ips()] if cfg.get("enabled") else [])  # no lookup at all while phone access is off
 
 
 def lan_start() -> None:

@@ -70,9 +70,10 @@ def smoke_test(app: Path, out: Path) -> None:
         def get(path, body=None):
             req = urllib.request.Request(f"http://127.0.0.1:{port}{path}", data=None if body is None else json.dumps(body).encode(),
                                          headers={"X-Ledger": "1"}, method="GET" if body is None else "POST")
-            return urllib.request.urlopen(req, timeout=30).read()
+            return urllib.request.urlopen(req, timeout=15).read()
         meta = None
-        for _ in range(120):
+        deadline = time.time() + 120  # never wait longer than this, whatever the app does
+        while time.time() < deadline:
             try:
                 meta = json.loads(get("/api/meta"))
                 break
