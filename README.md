@@ -42,10 +42,14 @@ Try these in order:
 
 ## First run
 
-1. The first time, it asks how you budget: **every two weeks** or **monthly**. You can change this later on the **Plan** tab.
-   If you'd like to look around first, choose **Load sample data** to see it with made-up numbers.
-2. On the **Plan** tab, add your income, your regular bills and your budgets.
-3. Bring in your bank transactions (below).
+The first time you open it, a short setup walks you through four steps:
+
+1. **How you budget:** every two weeks or monthly, and where to start.
+2. **What you take home:** enter your pay the way you know it (every week, every two weeks, monthly or yearly) and the ledger works out the rest. Add anyone else's pay that goes into the same budget.
+3. **Recurring bills:** tap common ones (rent, electric, phone) or add your own, with an amount, a due day and how often it repeats.
+4. **Bank transactions (optional):** bring in a file from your bank, or skip it and do it later.
+
+Everything can be changed afterward on the **Plan** tab. If you'd like to look around first, choose **Just looking? Load sample data** on the first step to see it with made-up numbers.
 
 ## Bringing in your transactions
 

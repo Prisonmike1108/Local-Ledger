@@ -358,22 +358,7 @@ $("addform").onsubmit = e => {
   api("/api/tx/add", body).then(r => refreshAll().then(() => { toast("Added the transaction. Now name its category."); return newCategoryDialog([r.id]); })).catch(fail);
 };
 
-// ---------- first run: a brand-new install has no pay periods yet ----------
-const SETUP = {mode: "biweekly"};
-const SETUP_HINTS = {biweekly: "Each paycheck is its own budget. Best if you're paid every two weeks and plan around each paycheck.",
-  monthly: "One budget per month. Best if you plan around monthly bills and think in months, however often you're paid."};
-function setupMode(m) {
-  SETUP.mode = m; [...$("sd_mode").children].forEach(b => b.classList.toggle("on", b.dataset.m === m));
-  $("sd_bi").classList.toggle("hide", m !== "biweekly"); $("sd_mo").classList.toggle("hide", m !== "monthly"); $("sd_hint").textContent = SETUP_HINTS[m];
-}
-function showSetup() {
-  document.body.classList.add("setup"); $("sub").textContent = "Set up your ledger";
-  $("sd_date").value = S.meta.today; $("sd_month").value = S.meta.today.slice(0, 7); setupMode("biweekly"); $("setup").classList.remove("hide");
-}
-$("sd_mode").onclick = e => { const b = e.target.closest("button[data-m]"); if (b) setupMode(b.dataset.m); };
-const setupBody = () => ({mode: SETUP.mode, date: $("sd_date").value, month: $("sd_month").value, day: +$("sd_day").value});
-$("sd_go").onclick = () => api("/api/setup/period", setupBody()).then(r => { toast(r.message); setTimeout(() => location.reload(), 600); }).catch(fail);
-$("sd_sample").onclick = () => api("/api/setup/sample", setupBody()).then(r => { toast(r.message); setTimeout(() => location.reload(), 600); }).catch(fail);
+// ---------- first run: a brand-new install has no pay periods yet; showSetup (the four-step wizard) is in setup.js ----------
 
 // ---------- monthly wording: "paycheck" and "pay period" read as "month" when you budget monthly ----------
 const MONTH_WORDS = [[/\bregular paychecks\b/g, "regular income"], [/\bPay periods\b/g, "Months"], [/\bpay periods\b/g, "months"], [/\bPay period\b/g, "Budget month"], [/\bpay period\b/g, "month"],

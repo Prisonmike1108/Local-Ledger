@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Personal Finance Ledger</title>
 <link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="setup.css">
 <style id="animcss"></style>
 <script>try { const f = localStorage.getItem("ft_font"); if (f) document.documentElement.style.fontSize = f + "px"; } catch (e) {}</script>
 </head>
@@ -77,19 +78,7 @@
   <section id="an" class="hide"><div class="card soon">Loading…</div></section>
   <section id="em" class="hide"><div class="card soon">Loading…</div></section>
 
-  <section id="setup" class="hide">
-    <div class="card"><h2 class="lab">Welcome</h2>
-      <p><b>How do you want to budget?</b> You can change this later on the Plan tab.</p>
-      <div class="seg" id="sd_mode"><button type="button" data-m="biweekly" class="on">Every two weeks</button><button type="button" data-m="monthly">Monthly</button></div>
-      <p class="hint" id="sd_hint" style="margin-top:8px"></p>
-      <div id="sd_bi"><label class="fl">First paycheck date<input type="date" id="sd_date"></label></div>
-      <div id="sd_mo" class="hide"><label class="fl">Start from month<input type="month" id="sd_month"></label><p class="hint" style="margin:-6px 0 12px">The earliest month you want to track. Bank transactions before it are ignored.</p>
-        <label class="fl">Each month starts on day<select id="sd_day"><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option><option value="6">6</option><option value="7">7</option><option value="8">8</option><option value="9">9</option><option value="10">10</option><option value="11">11</option><option value="12">12</option><option value="13">13</option><option value="14">14</option><option value="15">15</option><option value="16">16</option><option value="17">17</option><option value="18">18</option><option value="19">19</option><option value="20">20</option><option value="21">21</option><option value="22">22</option><option value="23">23</option><option value="24">24</option><option value="25">25</option><option value="26">26</option><option value="27">27</option><option value="28">28</option></select></label><p class="hint" style="margin:-6px 0 0">Most people pick 1. Pick the day your month really turns over, like payday, if that suits you better.</p></div>
-      <div class="ctrl" style="margin-top:12px"><button class="b pri" id="sd_go">Start my ledger</button><button class="b" id="sd_sample">Load sample data first</button></div>
-      <p class="hint" style="margin-top:12px">How this works: the ledger never connects to your bank. You download an export (CSV or Excel) from your bank's website
-        and import it here from time to time, using the import button on the left. Everything stays on this computer.</p>
-    </div>
-  </section>
+  <section id="setup" class="hide"></section>
 </div>
 
 <dialog id="dlgimp" aria-labelledby="ip_title">
@@ -132,5 +121,6 @@
 <script src="settings.js"></script>
 <script src="email.js"></script>
 <script src="sort.js"></script>
+<script src="setup.js"></script>
 </body>
 </html>
